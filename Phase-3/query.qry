@@ -1,0 +1,17 @@
+/*
+ * Quieres for Asset : Property in Property Registration Network
+ */
+
+query selectPropertyUsingPID {
+  description: "Select property using PID"
+  statement: 
+    SELECT org.propertyregistration.network.Property
+    WHERE (PID == _$PID)
+}
+
+query selectPropertyUsingOwner {
+  description: "Select property using owner provided"
+  statement: 
+    SELECT org.propertyregistration.network.Property
+    WHERE (owner == _$owner)
+}

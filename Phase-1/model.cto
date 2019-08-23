@@ -1,0 +1,73 @@
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* This namespace helps in idetifying the entities for the network. */
+namespace org.example.property
+
+/* Asset Property identified by a striing PID
+This is used to maintain the properties which are registered in the system.
+*/
+
+asset Property identified by PID {
+o String PID
+o String owner
+o Integer mktprice
+o String RegistrationDate
+o String PropertyType
+o String Location
+o Boolean Public
+o Boolean Private
+}
+
+/* Asset PropertyListing identified by a striing PLID
+This is used to maintain the properties which are listed for sale in the system.
+*/
+asset PropertyListing identified by PLID {
+
+o String PLID
+o String owner
+o Integer mktprice
+o String RegistrationDate
+o String PropertyType
+o String Location
+}
+
+/* Participant Buyer identified by a striing Bname
+This is used to maintain the buyers who are part of the system.
+*/ 
+participant Buyer identified by Bname {
+o String Bname
+o String Bemail
+o Integer IdentityNo //Passport, SSN, Aadhar etc.
+}
+  
+/* Participant Seller identified by a striing Sname
+This is used to maintain the sellers who are part of the system.
+*/ 
+participant Seller identified by Sname {
+o String Sname
+o String Semail
+o Integer IdentityNo
+}
+
+/* Transaction Created
+This is used to add new properties in the system.
+*/ 
+transaction Created {
+o String PID
+--> Property cproperty
+}
+
+
+
+

@@ -1,0 +1,142 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace org.propertyregistration.network
+
+/*
+ * concept for address for common address format
+ */
+concept Address {
+		o String addressLine1
+    o String pincode
+    o String city
+    o String state 
+    o String country default = "IN"
+}
+
+/*
+ * concept for bank account details
+ */
+concept BankAccountDetails {
+		o Integer accountNumber
+    o Integer balance optional
+    o String IFSC
+}
+
+/*
+ * Participant 1 - Buyer
+ */ 
+participant Buyer identified by id {
+		o String name
+    o String email regex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  	o String id // passport , id_proof, driving_license, ssn, other
+    o String bankName
+    o Address bankAddress
+    o BankAccountDetails bankAccountDetails
+}
+
+/*
+ * Participant 2 - Seller
+ */
+participant Seller identified by id {
+	  o String name
+    o String email regex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  	o String id // passport , id_proof, driving_license, ssn, other
+    o String bankName
+    o Address bankAddress
+    o BankAccountDetails bankAccountDetails
+    o String saleDeedDocs
+}
+
+/*
+ * Participant 3 - Registrar
+ */
+participant Registrar identified by id {
+		o String id
+    o String name
+    o String email regex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+}
+
+/*
+ * Enum for property type
+ */
+enum PropertyType {
+	  o TWO_BHK
+    o THREE_BHK
+    o VILLA
+}
+
+/*
+ * Enum PropertyStatus
+ */
+enum PropertyStatus {
+		o Created
+  	o Registered
+  	o Intent_of_Sale
+}
+  
+
+/*
+ * Asset 1 - Property
+ */
+asset Property identified by PID {
+		o String PID	
+    o String owner
+    o String registrationDate regex=/^(0?[1-9]|[12][0-9]|3[01])[- /.]((0?[1-9]|1[012])[- /.](19|20)?[0-9]{2})*$/
+    o PropertyType type
+    o Address location
+    o Boolean public
+    o Boolean private
+    o Integer marketPrice
+    o Boolean intentOfSale
+    o String status default = "Registered"
+}
+  
+/*
+ * Asset 2 - PropertyListing
+ */
+asset PropertyListing identified by PLID {
+		o String PLID
+  	o String owner
+  	o String registrationDate	regex=/^(0?[1-9]|[12][0-9]|3[01])[- /.]((0?[1-9]|1[012])[- /.](19|20)?[0-9]{2})*$/ 	// registration date of property with composer app
+  	o PropertyType type		// 2BHK, 3BHK, Villa
+  	o Address location
+  	o PropertyStatus status default = "Intent_of_Sale"
+}
+  
+/*
+ * Transaction 1 - Created
+ */
+transaction Created {
+		o String PID
+  	--> Property property
+}
+  
+/*
+ * Transaction 2 - Registered
+ */
+transaction Registered {
+		o String PID
+  	--> PropertyListing propertyListing
+  	--> Buyer buyer
+}
+  
+/*
+ * Transaction 3 - Intent Of Sale
+ */
+transaction IntentOfSale {
+	  --> Seller seller
+  	--> PropertyListing propertyListing
+  	--> Property property
+}
